@@ -97,6 +97,26 @@ route.post("/save-category",async(req,res)=>{
     res.redirect("/category");
 })
 route.get("/import-new/:vid",checkUser,async(req,res)=>{
-res.render("importnewstock.ejs")
+    let cats=await exe(`select*from category`);
+    let obj={
+        "cats":cats
+    }
+res.render("importnewstock.ejs",obj)
+})
+route.post("/import-new-stock",async(req,res)=>{
+ let inv=  await exe(`insert into imports(vid,imp_date,net_ttl) value('${req.body.vid}','${new Date().toISOString().slice(0,10)}','${req.body.net_ttl}')`);
+for(let i=0;i<req.body.pname.length;i++){
+await exe(`insert into product(pname,cid,price,mrp,unit,stock,mgf_date,exp_date,isExpired,ttl_amt,vid,imp_id)
+    values('${req.body.pname[i]}','${req.body.cid[i]}','${req.body.price[i]}',
+    '${req.body.mrp[i]}','${req.body.unit[i]}','${req.body.stock[i]}',
+    '${req.body.mgf_date[i]}','${req.body.exp_date[i]}','false','${req.body.ttl_amt[i]}',
+    '${req.body.vid}','${inv.insertId}')
+    `)
+
+
+}
+   
+   
+    res.send(req.body)
 })
 module.exports=route;
