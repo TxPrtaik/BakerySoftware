@@ -1,0 +1,72 @@
+<%-include('header.ejs')%>
+<div class="row">
+    <div class="col-12 grid-margin stretch-card" style="position: relative;">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Add new stock</h4>
+            <div class="table-responsive">
+                <table class="table" style="position: relative;">
+                  <thead>
+                    <tr>
+                        <th>SrNo.</th>
+                      <th>Product Name</th>
+                      <th>Category</th>
+                      <th>Price</th>
+                      <th>MRP</th>
+                      <th>Product Unit</th>
+                      <th>Stock</th>
+                      <th>Total</th>
+                      <th><button class="btn btn-primary" onclick="addRow()">+</button></th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody">
+                 
+                   
+                  </tbody>
+                </table>
+              </div>
+         
+          </div>
+        </div>
+      </div>
+</div>
+<script>
+  let ind=1;
+  function addRow(){
+$("#tbody").append(`
+  <tr>
+                    <td>${ind}</td>
+                    <td>
+                        <input type="text" name="pname" id="pnmae-${ind}" class="form-control">
+                    </td>
+                    <td>
+                     <select name="cid" id="cat-${ind}" class="form-control">
+                        <option value="" disabled selected>Select Category</option>
+                        <option value="">Cake</option>
+                        <option value="">Bread</option>
+                     </select>
+                    </td>
+                    <td><input type="number"  class="form-control" name="price" id="price-${ind}"></td>
+                    <td><input type="number"  class="form-control" name="mrp" id="mrp-${ind}"></td>
+                    <td>
+                        <select name="unit" id="unit-${ind}" class="form-control">
+                           <option value="" disabled selected>Select Unit</option>
+                           <option >per Pack</option>
+                           <option>per KG</option>
+                           <option>per Liter</option>
+                        </select>
+                       </td>
+                       <td><input type="number"  class="form-control" name="stock" id="stk-${ind}"></td>
+                       <td><input type="number"  class="form-control" name="ttl_amt" id="ttl-${ind}"></td>
+                       <td><button class="btn btn-danger btn-sm" onclick="delRow(this)"><i class="bi bi-x-circle"></i></button></td>
+                   </tr>
+`)
+ind++;
+  }
+  function delRow(ele){
+   
+ele.closest('tr').remove();
+  }
+</script>
+
+<%-include('footer.ejs')%>

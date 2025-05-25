@@ -1,0 +1,27 @@
+<%-include("header.ejs")%>
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">User Profile</h4>
+           
+            <form class="form-inline" method="post" action="/change-password">
+                <label class="sr-only" for="inlineFormInputGroupUsername2">Username</label>
+              <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">@</div>
+                </div>
+                <input type="text" class="form-control" value="<%-user.username%>" name="username" readonly id="inlineFormInputGroupUsername2" placeholder="Username">
+              </div>
+              <label class="sr-only" for="inlineFormInputName2">Password</label>
+              <input type="text" value="<%-user.password%>" name="password" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="Password">
+            
+              
+           
+              <button type="submit" class="btn btn-primary mb-2">Update</button>
+            </form>
+          </div>
+        </div>
+      </div>
+</div>
+<%-include("footer.ejs")%>

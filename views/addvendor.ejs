@@ -1,0 +1,31 @@
+<%-include('header.ejs')%>
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Add Vendor Details</h4>
+           
+            <form method="post" action="/save-vendor">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2" >Vendor Name* : </label>
+                        <input type="text" required class="form-control"  name="name" placeholder="Vendor Name">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2" >Contact No.* : </label>
+                        <input type="number" required class="form-control"  name="mobile" placeholder="Contact No.">
+                    </div>
+                </div>
+          
+            
+            
+            
+              
+           
+              <button  class="btn btn-primary mb-2">Add Vendor</button>
+            </form>
+          </div>
+        </div>
+      </div>
+</div>
+<%-include('footer.ejs')%>
