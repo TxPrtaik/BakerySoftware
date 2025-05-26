@@ -1,0 +1,38 @@
+<%-include('header.ejs')%>
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Vendor History</h4>
+        
+          <div class="table-responsive">
+          
+
+            <table class="table table-hover" id="categoryTable">
+                <thead>
+                  <tr>
+                 <th>SrNo.</th>
+                    <th>Date</th>
+                 <th>Total Amount</th>
+                 <th>Products</th>
+                  </tr>
+                </thead>
+                <tbody>
+                 <%for(let i=0;i<bills.length;i++){%>
+                    <tr>
+                        <td><%-i+1%></td>
+<td><%-bills[i].imp_date%></td>
+<td>&#8377; <%-bills[i].net_ttl%></td>
+<td><a class="btn btn-primary btn-sm" href="/product-list/<%-bills[i].id%>"><i class="bi bi-list-task"></i></a></td>
+                    </tr>
+                    
+                    
+                    <%}%>
+                </tbody>
+              </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+<%-include('footer.ejs')%>

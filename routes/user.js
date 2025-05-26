@@ -119,4 +119,46 @@ await exe(`insert into product(pname,cid,price,mrp,unit,stock,mgf_date,exp_date,
    
     res.send(req.body)
 })
+route.get("/deal-history/:vid",checkUser,async(req,res)=>{
+    let bills=await exe(`select*from imports where vid='${req.params.vid}' ORDER BY id DESC`);
+
+    let obj={
+        "bills":bills
+    }
+    res.render("dealhistory.ejs",obj);
+})
+route.get("/product-list/:id",checkUser,async(req,res)=>{
+    let bill=await exe(`select*from imports where id='${req.params.id}'`);
+    let pl=await exe(`select*,(select category from category where category.id=product.cid) as cat from product where imp_id='${req.params.id}'`);
+    let obj={
+        "bill":bill[0],
+        "pro":pl
+    }
+    res.render("impproducts.ejs",obj)
+})
+route.get("/products",checkUser,async(req,res)=>{
+    let pro=null;
+let title=null;
+   let cats=await exe(`select*from category`);
+    if(req.query.exp){
+        pro= await exe(`select*,(select category from category where category.id=product.cid) as cat, 
+        (select name from vendor where vendor.id=product.vid) as vendor
+            from product where isExpired='true'`);
+          title="Expired Products"
+       
+    }
+    else{
+     pro= await exe(`select* ,(select category from category where category.id=product.cid) as cat, 
+        (select name from vendor where vendor.id=product.vid) as vendor
+        from product where isExpired='false'`);
+             title="Products"
+    }
+    let obj={
+        "pro":pro,
+        "cats":cats,
+        "title":title
+    }
+    
+    res.render("products.ejs",obj)
+})
 module.exports=route;

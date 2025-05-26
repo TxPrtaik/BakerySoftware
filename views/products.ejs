@@ -1,0 +1,106 @@
+<%-include('header.ejs')%>
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+          
+            
+              <div class="table-responsive">
+              
+    
+                <div class="row mb-3">
+                    <div class="col-md-6 mx-auto">
+                      <input type="text" id="searchInput" class="form-control form-control-lg shadow-sm" placeholder="🔍 Search products...">
+                    </div>
+                  </div>
+                  
+                  <!-- Scrollable Category Tabs -->
+                  <div class="row mb-4">
+                    <div class="col-12">
+                      <div class="nav nav-tabs overflow-auto flex-nowrap border rounded-pill p-2 bg-light" id="categoryTabs" role="tablist" style="white-space: nowrap;">
+                        <button class="nav-link active rounded-pill px-4 py-2 me-2 btn btn-outline-primary" onclick="filterByCategory('all')">All</button>
+                        <% 
+                        for(let i of cats){
+                        %>
+                        &nbsp;&nbsp;
+                          <button class="nav-link rounded-pill px-4 py-2 me-2 ms-2 btn btn-outline-secondary" onclick="filterByCategory('<%-i.category%>')"><%-i.category%></button>
+                        <% } %>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Products Table Card -->
+                  <div class="col-12 grid-margin stretch-card">
+                    <div class="card shadow-sm border-0">
+                      <div class="card-body">
+                        <h4 class="card-title mb-4 text-primary fw-bold">📦 <%-title%></h4>
+                  
+                        <div class="table-responsive">
+                          <table class="table table-hover align-middle text-center" id="productTable">
+                            <thead class="table-light">
+                              <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Mgf. Date</th>
+                                <th>Exp. Date</th>
+                                <th>Price</th>
+                                <th>Unit</th>
+                                <th>Stock</th>
+                                <th>Vendor</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% for(let i of pro){ %>
+                                <tr>
+                                  <td class="pname fw-semibold"><%-i.pname%></td>
+                                  <td class="cat"><%-i.cat%></td>
+                                  <td><%-i.mgf_date%></td>
+                                  <td><%-i.exp_date%></td>
+                                  <td>₹<%-i.price%></td>
+                                  <td><%-i.unit%></td>
+                                  <td class="<%-(i.stock<5)?'text-danger fw-bold':''%>"><%-i.stock%></td>
+                                  <td><%-i.vendor%></td>
+                                </tr>
+                              <% } %>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+              </div>
+            </div>
+          </div>
+        </div>
+</div>
+<script>
+    const searchInput = document.getElementById("searchInput");
+    const rows = document.querySelectorAll("#productTable tbody tr");
+  
+    searchInput.addEventListener("input", function () {
+      const value = this.value.toLowerCase();
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(value) ? "" : "none";
+      });
+    });
+  
+    function filterByCategory(category) {
+      document.querySelectorAll('#categoryTabs .nav-link').forEach(btn => btn.classList.remove('active', 'btn-outline-primary', 'btn-outline-secondary'));
+      const buttons = document.querySelectorAll('#categoryTabs .nav-link');
+      buttons.forEach(btn => {
+        if (btn.innerText === category || (category === 'all' && btn.innerText === 'All')) {
+          btn.classList.add('active', 'btn-outline-primary');
+        } else {
+          btn.classList.add('btn-outline-secondary');
+        }
+      });
+  
+      rows.forEach(row => {
+        const rowCat = row.querySelector(".cat").innerText;
+        row.style.display = (category === "all" || rowCat === category) ? "" : "none";
+      });
+    }
+  </script>
+<%-include('footer.ejs')%>
