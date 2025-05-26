@@ -3,7 +3,9 @@ let route=express.Router();
 let exe=require("../connection");
 
 function checkUser(req,res,next){
+    setExpiry();
     req.session.uid=1;
+
     if(req.session.uid){
         next();
     }
@@ -40,7 +42,20 @@ route.post("/create-account",async(req,res)=>{
     req.session.uid=data.insertId;
    res.redirect("/");
 })
+async function setExpiry(){
+    let pros=await exe(`select*from product where isExpired='false'`);
+   
+    let ndate=new Date().getTime();
+    for(let i of pros){
+        let odate=new Date(i.exp_date).getTime();
+        if(ndate>odate){
+       await exe(`update product set isExpired='true' where id='${i.id}'`)
+        }
+    }
+}
 route.get("/",checkUser,async(req,res)=>{
+   
+
     res.render("index.ejs");
 })
 route.get("/profile",checkUser,async(req,res)=>{
