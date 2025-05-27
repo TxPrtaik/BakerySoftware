@@ -47,6 +47,8 @@
                                 <th>Unit</th>
                                 <th>Stock</th>
                                 <th>Vendor</th>
+                                <th>Return</th>
+                               
                               </tr>
                             </thead>
                             <tbody>
@@ -60,6 +62,14 @@
                                   <td><%-i.unit%></td>
                                   <td class="<%-(i.stock<5)?'text-danger fw-bold':''%>"><%-i.stock%></td>
                                   <td><%-i.vendor%></td>
+                              
+                                    <%if(i.isReturn=='false'){%>
+<td><a href="/return-product/<%-i.id%>" class="btn btn-danger">Return</a></td>
+
+                                      <%}else{%>
+                                        <td><button disabled class="btn btn-danger btn-sm">Returned On <%-i.return_date%></button></td> 
+                                        <%}%>
+                                 
                                 </tr>
                               <% } %>
                             </tbody>

@@ -121,11 +121,11 @@ res.render("importnewstock.ejs",obj)
 route.post("/import-new-stock",async(req,res)=>{
  let inv=  await exe(`insert into imports(vid,imp_date,net_ttl) value('${req.body.vid}','${new Date().toISOString().slice(0,10)}','${req.body.net_ttl}')`);
 for(let i=0;i<req.body.pname.length;i++){
-await exe(`insert into product(pname,cid,price,mrp,unit,stock,mgf_date,exp_date,isExpired,ttl_amt,vid,imp_id)
+await exe(`insert into product(pname,cid,price,mrp,unit,stock,mgf_date,exp_date,isExpired,ttl_amt,vid,imp_id,isReturn,return_date)
     values('${req.body.pname[i]}','${req.body.cid[i]}','${req.body.price[i]}',
     '${req.body.mrp[i]}','${req.body.unit[i]}','${req.body.stock[i]}',
     '${req.body.mgf_date[i]}','${req.body.exp_date[i]}','false','${req.body.ttl_amt[i]}',
-    '${req.body.vid}','${inv.insertId}')
+    '${req.body.vid}','${inv.insertId}','false','-')
     `)
 
 
@@ -158,14 +158,21 @@ let title=null;
     if(req.query.exp){
         pro= await exe(`select*,(select category from category where category.id=product.cid) as cat, 
         (select name from vendor where vendor.id=product.vid) as vendor
-            from product where isExpired='true'`);
+            from product where isExpired='true' `);
           title="Expired Products"
+       
+    }
+   else if(req.query.ret){
+        pro= await exe(`select*,(select category from category where category.id=product.cid) as cat, 
+        (select name from vendor where vendor.id=product.vid) as vendor
+            from product where  isReturn='true'`);
+          title="Returned Products"
        
     }
     else{
      pro= await exe(`select* ,(select category from category where category.id=product.cid) as cat, 
         (select name from vendor where vendor.id=product.vid) as vendor
-        from product where isExpired='false'`);
+        from product where isExpired='false' `);
              title="Products"
     }
     let obj={
@@ -175,5 +182,11 @@ let title=null;
     }
     
     res.render("products.ejs",obj)
+})
+route.get("/return-product/:id",checkUser,async(req,res)=>{
+    let pro=await exe(`update product set stock='0',isReturn='true',return_date='${new Date().toISOString().slice(0,10)}'
+    where id='${req.params.id}'
+    `);
+    res.redirect("/products?ret=true");
 })
 module.exports=route;
