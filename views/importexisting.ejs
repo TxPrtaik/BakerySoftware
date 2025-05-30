@@ -1,0 +1,164 @@
+<%-include('header.ejs')%>
+<style>
+  
+</style>
+<div class="row">
+    <div class="col-12 grid-margin stretch-card" style="position: relative;">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Add new stock</h4>
+            <div class="table-responsive">
+                <table class="table" style="position: relative;">
+                  <thead>
+                    <tr>
+                    
+                      <th>Product Name</th>
+                      <th>Mgf. Date</th>
+                    
+                      <th>Exp. Date</th>
+                    
+                      <th>Product MRP  (in &#8377;)</th>
+                      
+                      <th>Current Stock</th>
+                      <th>New Stock</th>
+                      <th>Total Amount to Pay  (in &#8377;)</th>
+                      <th><button class="btn btn-primary" onclick="addRow()">+</button></th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody">
+            
+                   
+                  </tbody>
+                  <tfoot>
+<tr>
+  <th colspan="4" class="text-center">Net Total (in &#8377;)</th>
+  <th colspan="2">
+    <input type="number" min="0" class="form-control" readonly id="netttl">
+  </th>
+  <th colspan="2">
+    <button class="btn w-100 btn-success"  id="pay_btn" disabled>Procceed</button>
+  </th>
+</tr>
+
+                  </tfoot>
+                </table>
+              </div>
+         
+          </div>
+        </div>
+      </div>
+</div>
+<script>
+  let ind=1;
+  function addRow(){
+$("#tbody").append(`
+       <tr>
+                    <td><select name="product" id="product-1" class="form-control" >
+                        <option value="" selected disabled>Select Product</option>
+                        <%for(let i of pros){%>
+                            <option value="<%-i.id%>"><%-i.pname%>  </option>
+                            <%}%>
+                    </select></td>
+                    <td><input class="form-control" type="date" name="mgf_date" id="mgf-1" /></td>
+                    <td><input class="form-control" type="date" name="exp_date" id="exp-1" /></td>
+                    <td><input class="form-control"  name="mrp" id="mrp-1" value="123" /></td>
+                    <td><input class="form-control"  name="cur_stock" readonly value="123" /></td>
+                    <td><input class="form-control"  name="new_stock" id="new_stock-1" value="123" /></td>
+                    <td><input class="form-control"  name="ttl_amt" id="ttl-1" value="123" /></td>
+                    <td><button class="btn btn-danger btn-sm" onclick="delRow(this)"><i class="bi bi-x-circle"></i></button></td>
+                </tr>
+               
+`)
+
+ind++;
+
+  document.getElementById("pay_btn").disabled=false;
+
+}
+  function delRow(ele){
+   
+ele.closest('tr').remove();
+// setNetTtl();
+
+  }
+
+// function setTotalPrice(ele){
+//   let id=ele.id.split("-")[1];
+//   let mrp=document.getElementById("mrp-"+id).value;
+//   let stk=document.getElementById("stk-"+id).value;
+
+//   document.getElementById("ttl-"+id).value=mrp*stk;
+//   setNetTtl();
+// }
+
+// function setNetTtl(){
+//   let ttls=document.getElementsByName("ttl_amt");
+//   let netttl=0;
+// for(let i of ttls){
+// netttl=Number(netttl)+Number(i.value);
+// }
+// document.getElementById("netttl").value=netttl;
+// }
+
+
+
+</script>
+<script>
+//   let path=window.location.pathname;
+
+//   function sendData(){
+//     let data={
+//       "pname":[],
+//       "cid":[],
+//       "mgf_date":[],
+//       "exp_date":[],
+//       "price":[],
+//       "mrp":[],
+//       "unit":[],
+//       "stock":[],
+//       "ttl_amt":[],
+//       "net_ttl":document.getElementById("netttl").value,
+//       "vid":path.split("/")[2]
+      
+//     }
+//     for(let  i of document.getElementsByName("pname")){
+
+// data.pname.push(i.value);
+//     }
+//     for(let  i of document.getElementsByName("cid")){
+// data.cid.push(i.value);
+//     }
+//     for(let  i of document.getElementsByName("mgf_date")){
+// data.mgf_date.push(i.value);
+//     }
+//     for(let  i of document.getElementsByName("exp_date")){
+// data.exp_date.push(i.value);
+//     }
+//     for(let  i of document.getElementsByName("price")){
+// data.price.push(i.value);
+//     }
+//     for(let  i of document.getElementsByName("mrp")){
+// data.mrp.push(i.value);
+//     }
+//     for(let  i of document.getElementsByName("unit")){
+// data.unit.push(i.value);
+//     }
+//     for(let  i of document.getElementsByName("stock")){
+// data.stock.push(i.value);
+//     }
+//     for(let  i of document.getElementsByName("ttl_amt")){
+// data.ttl_amt.push(i.value);
+//     }
+//     $.ajax({
+//       "method":"post",
+//       "data":data,
+//       "url":"/import-new-stock"
+//     }).done((res)=>{
+      
+//     alert("Stock Added Successfully");
+//     window.location.reload();
+//     })
+//   }
+</script>
+
+<%-include('footer.ejs')%>

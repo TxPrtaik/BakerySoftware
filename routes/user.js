@@ -189,4 +189,11 @@ route.get("/return-product/:id",checkUser,async(req,res)=>{
     `);
     res.redirect("/products?ret=true");
 })
+route.get("/import-existing/:id",checkUser,async(req,res)=>{
+    let pros=await exe(`select*from product where vid='${req.params.id}'`);
+    let obj={
+        "pros":pros
+    }
+    res.render("importexisting.ejs",obj);
+})
 module.exports=route;
