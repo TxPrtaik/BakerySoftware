@@ -51,12 +51,22 @@ async function setExpiry(){
         if(ndate>odate){
        await exe(`update product set isExpired='true' where id='${i.id}'`)
         }
+        else{
+            await exe(`update product set isExpired='false' where id='${i.id}'`)
+        }
     }
 }
 route.get("/",checkUser,async(req,res)=>{
+
+   let todays_imp=await exe(`select count(*) as ttl from imports where imp_date='${new Date().toISOString().slice(0,10)}'`);
+   let user=await exe(`select*from users where id='${req.session.uid}'`);
+   let obj={
+    "ttl_imps":todays_imp[0].ttl,
+    "user":user[0]
+   }
    
 
-    res.render("index.ejs");
+    res.render("index.ejs",obj);
 })
 route.get("/profile",checkUser,async(req,res)=>{
     let data=await exe(`select*from users where id='${req.session.uid}'`);
@@ -190,10 +200,30 @@ route.get("/return-product/:id",checkUser,async(req,res)=>{
     res.redirect("/products?ret=true");
 })
 route.get("/import-existing/:id",checkUser,async(req,res)=>{
-    let pros=await exe(`select*from product where vid='${req.params.id}'`);
+    let pros=await exe(`select*from product where vid='${req.params.id}' and isReturn='true'`);
     let obj={
         "pros":pros
     }
     res.render("importexisting.ejs",obj);
+})
+route.post("/import-existing-stock",async(req,res)=>{
+    let inv=await exe(`insert into imports(vid,imp_date,net_ttl) values('${req.body.vid}','${new Date().toISOString().slice(0,10)}','${req.body.net_ttl}')`)
+for(let i=0;i<req.body.pname.length;i++){
+   let stock=Number(req.body.cur_stock[i])+Number(req.body.new_stock[i]);
+    await exe(`update product set mgf_date='${req.body.mgf_date[i]}', exp_date='${req.body.exp_date[i]}',
+        mrp='${req.body.mrp[i]}',imp_id='${inv.insertId}',stock='${stock}',isReturn='false',return_date='-' where id='${req.body.pname[i]}'`);
+}
+res.redirect("/products")
+})
+route.get("/todays-imports",checkUser,async(req,res)=>{
+    let data=await exe(`select*,(select name from vendor where vendor.id=imports.vid) as vendor from imports where imp_date='${new Date().toISOString().slice(0,10)}'`)
+    let obj={
+        "imps":data
+    }
+    res.render("todaysimp.ejs",obj);
+})
+route.get("/delete-import/:id",checkUser,async(req,res)=>{
+    await exe(`delete from imports where id='${req.params.id}'`);
+    res.redirect("/todays-imports");
 })
 module.exports=route;

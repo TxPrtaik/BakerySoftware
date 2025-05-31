@@ -36,7 +36,7 @@
     <input type="number" min="0" class="form-control" readonly id="netttl">
   </th>
   <th colspan="2">
-    <button class="btn w-100 btn-success"   id="pay_btn" disabled>Procceed</button>
+    <button class="btn w-100 btn-success" onclick="sendData()"   id="pay_btn" disabled>Procceed</button>
   </th>
 </tr>
 
@@ -100,14 +100,6 @@ setNetTtl();
 
   }
 
-// function setTotalPrice(ele){
-//   let id=ele.id.split("-")[1];
-//   let mrp=document.getElementById("mrp-"+id).value;
-//   let stk=document.getElementById("stk-"+id).value;
-
-//   document.getElementById("ttl-"+id).value=mrp*stk;
-//   
-// }
 
 function setNetTtl(){
   let ttls=document.getElementsByName("ttl_amt");
@@ -122,61 +114,59 @@ document.getElementById("netttl").value=netttl;
 
 </script>
 <script>
-//   let path=window.location.pathname;
+   let path=window.location.pathname;
 
-//   function sendData(){
-//     let data={
-//       "pname":[],
-//       "cid":[],
-//       "mgf_date":[],
-//       "exp_date":[],
-//       "price":[],
-//       "mrp":[],
-//       "unit":[],
-//       "stock":[],
-//       "ttl_amt":[],
-//       "net_ttl":document.getElementById("netttl").value,
-//       "vid":path.split("/")[2]
-      
-//     }
-//     for(let  i of document.getElementsByName("pname")){
+  function sendData(){
+    let data={
+      "pname":[],
 
-// data.pname.push(i.value);
-//     }
-//     for(let  i of document.getElementsByName("cid")){
-// data.cid.push(i.value);
-//     }
-//     for(let  i of document.getElementsByName("mgf_date")){
-// data.mgf_date.push(i.value);
-//     }
-//     for(let  i of document.getElementsByName("exp_date")){
-// data.exp_date.push(i.value);
-//     }
-//     for(let  i of document.getElementsByName("price")){
-// data.price.push(i.value);
-//     }
-//     for(let  i of document.getElementsByName("mrp")){
-// data.mrp.push(i.value);
-//     }
-//     for(let  i of document.getElementsByName("unit")){
-// data.unit.push(i.value);
-//     }
-//     for(let  i of document.getElementsByName("stock")){
-// data.stock.push(i.value);
-//     }
-//     for(let  i of document.getElementsByName("ttl_amt")){
-// data.ttl_amt.push(i.value);
-//     }
-//     $.ajax({
-//       "method":"post",
-//       "data":data,
-//       "url":"/import-new-stock"
-//     }).done((res)=>{
+      "mgf_date":[],
+      "exp_date":[],
+
+      "mrp":[],
+
+      "cur_stock":[],
+      "new_stock":[],
+      "ttl_amt":[],
+      "net_ttl":document.getElementById("netttl").value,
+      "vid":path.split("/")[2]
       
-//     alert("Stock Added Successfully");
-//     window.location.reload();
-//     })
-//   }
+    }
+   for(let  i of document.getElementsByName("product")){
+
+ data.pname.push(i.value);
+   }
+
+    for(let  i of document.getElementsByName("mgf_date")){
+data.mgf_date.push(i.value);
+    }
+    for(let  i of document.getElementsByName("exp_date")){
+data.exp_date.push(i.value);
+    }
+
+    for(let  i of document.getElementsByName("mrp")){
+data.mrp.push(i.value);
+    }
+    for(let  i of document.getElementsByName("cur_stock")){
+data.cur_stock.push(i.value);
+    }
+    for(let  i of document.getElementsByName("new_stock")){
+data.new_stock.push(i.value);
+    }
+    for(let  i of document.getElementsByName("ttl_amt")){
+data.ttl_amt.push(i.value);
+    }
+    console.log(data);
+    $.ajax({
+      "method":"post",
+      "data":data,
+      "url":"/import-existing-stock"
+    }).done((res)=>{
+      
+    alert("Stock Added Successfully");
+    window.location.reload();
+    })
+  }
 </script>
 
 <%-include('footer.ejs')%>
