@@ -226,4 +226,16 @@ route.get("/delete-import/:id",checkUser,async(req,res)=>{
     await exe(`delete from imports where id='${req.params.id}'`);
     res.redirect("/todays-imports");
 })
+route.get("/sell-product",checkUser,async(req,res)=>{
+  let pro= await exe(`select*,(select category from category where category.id=product.cid) as cat, 
+  (select name from vendor where vendor.id=product.vid) as vendor
+      from product `);
+      let obj={
+        "pro":pro
+      }
+res.render("sellproduct.ejs",obj);
+})
+route.get("/add-customer",checkUser,async(req,res)=>{
+    res.render("addcustomer.ejs")
+})
 module.exports=route;

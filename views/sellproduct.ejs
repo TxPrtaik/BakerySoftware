@@ -1,0 +1,179 @@
+<%-include('header.ejs')%>
+<style>
+  
+</style>
+<div class="row">
+    <div class="col-12 grid-margin stretch-card" style="position: relative;">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Sell Stock</h4>
+            <div class="table-responsive">
+                <table class="table" style="position: relative;">
+                  <thead>
+                    <tr>
+                    
+                      <th>Product Name</th>
+                      <th>Mgf. Date</th>
+                    
+                      <th>Exp. Date</th>
+                    
+                      <th>Product Price  (in &#8377;)</th>
+                      
+                      <th>Current Stock</th>
+                      <th>Sell Stock</th>
+                      <th>Total Amount to Pay  (in &#8377;)</th>
+                      <th><button class="btn btn-primary" onclick="addRow()">+</button></th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody">
+            
+                   
+                  </tbody>
+                  <tfoot>
+<tr>
+    <th colspan="1">Customer </th>
+    <th colspan="2"><select class="form-control" name="cid" required>
+        <option value="" selected disabled>Select Customer</option>
+        <option value="1">Pratik chindhe</option>
+        <option value="2">Aditya Chindhe</option>
+    </select></th>
+  <th colspan="1" class="text-center">Net Total (in &#8377;)</th>
+  <th colspan="2">
+    <input type="number" min="0" class="form-control" readonly id="netttl">
+  </th>
+  <th colspan="2">
+    <button class="btn w-100 btn-success" onclick="sendData()"   id="pay_btn" disabled>Procceed</button>
+  </th>
+</tr>
+
+                  </tfoot>
+                </table>
+              </div>
+         
+          </div>
+        </div>
+      </div>
+</div>
+<script>
+  let ind=1;
+  function addRow(){
+  
+$("#tbody").append(`
+       <tr>
+                    <td><select name="product" onchange="setPro(this)" id="product-${ind}" class="form-control" >
+                        <option value="" selected disabled>Select Product</option>
+                        <%for(let i of pro){%>
+                            <option value="<%-i.id%>"><%-i.pname%>  </option>
+                            <%}%>
+                    </select></td>
+                    <td><input class="form-control" type="date" name="mgf_date" id="mgf-${ind}" /></td>
+                    <td><input class="form-control" type="date" name="exp_date" id="exp-${ind}" /></td>
+                    <td><input class="form-control"  name="price" id="price-${ind}" value="" /></td>
+                    <td><input class="form-control"  name="cur_stock" id="cur_stock-${ind}" readonly value="" /></td>
+                    <td><input class="form-control"  name="sell_stock" onkeyup="setTtlPrice(this)"  id="sell_stock-${ind}" value="0" /></td>
+                    <td><input class="form-control" readonly  name="ttl_amt" id="ttl-${ind}" value="" /></td>
+                    <td><button class="btn btn-danger btn-sm" onclick="delRow(this)"><i class="bi bi-x-circle"></i></button></td>
+                </tr>
+               
+`)
+
+ind++;
+
+  document.getElementById("pay_btn").disabled=false;
+
+}
+function setPro(ele){
+let pros=<%-JSON.stringify(pro)%>
+let id=ele.id.split("-")[1];
+for(let i of pros){
+  if(ele.value==i.id){
+document.getElementById("price-"+id).value=i.price;
+document.getElementById("cur_stock-"+id).value=i.stock;
+document.getElementById("mgf-"+id).value=new Date(i.mgf_date).toISOString().slice(0,10)
+document.getElementById("exp-"+id).value=new Date(i.exp_date).toISOString().slice(0,10)
+  }
+}
+
+}
+function setTtlPrice(ele){
+let id=ele.id.split("-")[1];
+document.getElementById("ttl-"+id).value=ele.value*document.getElementById("price-"+id).value;
+setNetTtl();
+}
+  function delRow(ele){
+   
+ele.closest('tr').remove();
+setNetTtl();
+
+  }
+
+
+function setNetTtl(){
+  let ttls=document.getElementsByName("ttl_amt");
+  let netttl=0;
+for(let i of ttls){
+netttl=Number(netttl)+Number(i.value);
+}
+document.getElementById("netttl").value=netttl;
+}
+
+
+
+</script>
+<script>
+   let path=window.location.pathname;
+
+  function sendData(){
+    let data={
+      "pname":[],
+
+      "mgf_date":[],
+      "exp_date":[],
+
+      "price":[],
+
+      "cur_stock":[],
+      "sell_stock":[],
+      "ttl_amt":[],
+      "net_ttl":document.getElementById("netttl").value,
+      "cid":document.getElementsByName("cid")[0].value
+      
+    }
+   for(let  i of document.getElementsByName("product")){
+
+ data.pname.push(i.value);
+   }
+
+    for(let  i of document.getElementsByName("mgf_date")){
+data.mgf_date.push(i.value);
+    }
+    for(let  i of document.getElementsByName("exp_date")){
+data.exp_date.push(i.value);
+    }
+
+    for(let  i of document.getElementsByName("price")){
+data.price.push(i.value);
+    }
+    for(let  i of document.getElementsByName("cur_stock")){
+data.cur_stock.push(i.value);
+    }
+    for(let  i of document.getElementsByName("sell_stock")){
+data.sell_stock.push(i.value);
+    }
+    for(let  i of document.getElementsByName("ttl_amt")){
+data.ttl_amt.push(i.value);
+    }
+    console.log(data);
+//     $.ajax({
+//       "method":"post",
+//       "data":data,
+//       "url":"/import-existing-stock"
+//     }).done((res)=>{
+      
+//     alert("Stock Added Successfully");
+//     window.location.reload();
+//     })
+ }
+</script>
+
+<%-include('footer.ejs')%>
