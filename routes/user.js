@@ -230,12 +230,46 @@ route.get("/sell-product",checkUser,async(req,res)=>{
   let pro= await exe(`select*,(select category from category where category.id=product.cid) as cat, 
   (select name from vendor where vendor.id=product.vid) as vendor
       from product `);
+      let cust=await exe(`select*from customers`);
       let obj={
-        "pro":pro
+        "pro":pro,
+        "cust":cust
       }
 res.render("sellproduct.ejs",obj);
 })
 route.get("/add-customer",checkUser,async(req,res)=>{
     res.render("addcustomer.ejs")
+})
+route.post("/save-customer",async(req,res)=>{
+    await exe(`insert into customers(name,mobile) values('${req.body.name}','${req.body.mobile}')`)
+    res.redirect("/add-customer")
+})
+route.get("/customer-list",checkUser,async(req,res)=>{
+    let cus=await exe(`select*from customers`)
+    let obj={
+        "cust":cus
+    }
+    res.render("customerlist.ejs",obj)
+})
+route.get("/edit-customer/:id",checkUser,async(req,res)=>{
+    let cust=await exe(`select*from customers where id='${req.params.id}'`);
+    let obj={
+        "cust":cust[0]
+    }
+    res.render("editcustomer.ejs",obj)
+})
+route.post("/update-cutomer/:id",async(req,res)=>{
+    await exe(`update customers set name='${req.body.name}',mobile='${req.body.mobile}' where id='${req.params.id}'`);
+    res.redirect("/edit-customer/"+req.params.id)
+})
+route.post("/add-exports",async(req,res)=>{
+    let exp=await exe(`insert into exports(cid,ttl_amt,export_date) values('${req.body.cid}','${req.body.net_ttl}','${new Date().toISOString().slice(0,10)}')`);
+    for(let i=0;i<req.body.pname.length;i++){
+        await exe(`update product set stock='${req.body.cur_stock[i]-req.body.sell_stock[i]}' where id='${req.body.pname[i]}'`);
+await exe(`insert into export_pro(pid,sell_stock,price,mgf_date,exp_date,ttl_price,exp_id)
+    values('${req.body.pname[i]}','${req.body.sell_stock[i]}','${req.body.price[i]}','${req.body.mgf_date[i]}','${req.body.exp_date[i]}'
+    ,'${req.body.ttl_amt[i]}','${exp.insertId}')`)
+    }
+    res.send("done");
 })
 module.exports=route;

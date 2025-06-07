@@ -34,8 +34,10 @@
     <th colspan="1">Customer </th>
     <th colspan="2"><select class="form-control" name="cid" required>
         <option value="" selected disabled>Select Customer</option>
-        <option value="1">Pratik chindhe</option>
-        <option value="2">Aditya Chindhe</option>
+<%for(let i of cust){%>
+  <option value="<%-i.id%>"><%-i.name%></option>
+  
+  <%}%>
     </select></th>
   <th colspan="1" class="text-center">Net Total (in &#8377;)</th>
   <th colspan="2">
@@ -163,16 +165,16 @@ data.sell_stock.push(i.value);
     for(let  i of document.getElementsByName("ttl_amt")){
 data.ttl_amt.push(i.value);
     }
-    console.log(data);
-//     $.ajax({
-//       "method":"post",
-//       "data":data,
-//       "url":"/import-existing-stock"
-//     }).done((res)=>{
+
+    $.ajax({
+      "method":"post",
+      "data":data,
+      "url":"/add-exports"
+    }).done((res)=>{
       
-//     alert("Stock Added Successfully");
-//     window.location.reload();
-//     })
+    alert("Stock Added Successfully");
+    window.location.reload();
+    })
  }
 </script>
 
