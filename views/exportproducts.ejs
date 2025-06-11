@@ -1,0 +1,52 @@
+<%-include('header.ejs')%>
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Purchased Product List</h4>
+            
+              <div class="table-responsive">
+              
+    
+                <table class="table table-hover" >
+                    <thead>
+                      <tr>
+                     <th>SrNo.</th>
+                        <th>Product</th>
+                    
+                     <th>Mgf. Date</th>
+                    <th>Exp. Date</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                     <%for(let i=0;i<pro.length;i++){%>
+                        <tr>
+                            <td><%-i+1%></td>
+    <td><%-pro[i].pname%></td>
+   
+    <td><%-pro[i].mgf_date%></td>
+    <td><%-pro[i].exp_date%></td>
+    <td>&#8377; <%-pro[i].price%></td>
+ 
+    <td><%-pro[i].sell_stock%></td>
+    <td>&#8377; <%-pro[i].ttl_price%></td>
+                        </tr>
+                        
+                        
+                        <%}%>
+                    </tbody>
+                    <tfoot>
+                        <th colspan="8" class="text-center">Net Total</th>
+                        <th colspan="2">&#8377; </th>
+                    </tfoot>
+                  </table>
+              </div>
+            </div>
+          </div>
+        </div>
+</div>
+<%-include('footer.ejs')%>

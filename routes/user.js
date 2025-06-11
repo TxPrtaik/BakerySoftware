@@ -272,4 +272,18 @@ await exe(`insert into export_pro(pid,sell_stock,price,mgf_date,exp_date,ttl_pri
     }
     res.send("done");
 })
+route.get("/sell-details",checkUser,async(req,res)=>{
+    let sells=await exe(`select*,(select name from customers where customers.id=exports.cid) as customer from exports`);
+    let obj={
+        "sells":sells
+    }
+res.render("exportdetails.ejs",obj);
+})
+route.get("/sold-product/:id",async(req,res)=>{
+    let pros=await exe(`select*,(select pname from product where product.id=export_pro.pid) as pname from export_pro where exp_id='${req.params.id}'`)
+let obj={
+    "pro":pros
+}
+res.render("exportproducts.ejs",obj)
+})
 module.exports=route;
