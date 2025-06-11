@@ -4,7 +4,7 @@ let exe=require("../connection");
 
 function checkUser(req,res,next){
     setExpiry();
-    req.session.uid=1;
+    req.session.uid=1
 
     if(req.session.uid){
         next();
@@ -56,14 +56,19 @@ async function setExpiry(){
         }
     }
 }
+
+
 route.get("/",checkUser,async(req,res)=>{
 
    let todays_imp=await exe(`select count(*) as ttl from imports where imp_date='${new Date().toISOString().slice(0,10)}'`);
    let user=await exe(`select*from users where id='${req.session.uid}'`);
+   let todays_exp=await exe(`select count(*) as ttl from exports where export_date='${new Date().toISOString().slice(0,10)}'`);
+
    let obj={
     "ttl_imps":todays_imp[0].ttl,
-    "user":user[0]
-   }
+    "user":user[0],
+"sells":todays_exp[0].ttl   
+}
    
 
     res.render("index.ejs",obj);
@@ -281,9 +286,18 @@ res.render("exportdetails.ejs",obj);
 })
 route.get("/sold-product/:id",async(req,res)=>{
     let pros=await exe(`select*,(select pname from product where product.id=export_pro.pid) as pname from export_pro where exp_id='${req.params.id}'`)
-let obj={
-    "pro":pros
+let exp=await exe(`select*from exports where id='${req.params.id}'`)
+    let obj={
+    "pro":pros,
+    "exp":exp[0]
 }
 res.render("exportproducts.ejs",obj)
+})
+route.get("/customer-history/:id",async(req,res)=>{
+    let his=await exe(`select*from exports where cid='${req.params.id}'`);
+    let obj={
+        "his":his
+    }
+    res.render("customerhistory.ejs",obj);
 })
 module.exports=route;
