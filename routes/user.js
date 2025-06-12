@@ -4,7 +4,7 @@ let exe=require("../connection");
 
 function checkUser(req,res,next){
     setExpiry();
-    req.session.uid=1
+   
 
     if(req.session.uid){
         next();
